@@ -1,0 +1,47 @@
+group 'br.teste.chat'
+version '1.0-SNAPSHOT'
+
+buildscript {
+    ext.kotlin_version = '0.13.1513'
+    repositories {
+        mavenCentral()
+        maven { url 'http://oss.sonatype.org/content/repositories/snapshots' }
+        maven { url 'http://repository.jetbrains.com/all' }
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+apply plugin: "kotlin" // or apply plugin: "kotlin2js" if targeting JavaScript
+apply plugin: 'application'
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'Main'
+    }
+}
+
+mainClassName = "xmpp.CcsClient"
+
+repositories {
+    mavenCentral()
+    maven { url 'http://oss.sonatype.org/content/repositories/snapshots' }
+    maven { url 'http://repository.jetbrains.com/all' }
+}
+
+sourceSets {
+    main {
+        kotlin {
+            srcDir 'src/main/kotlin'
+        }
+    }
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compile 'org.igniterealtime.smack:smack:3.2.1'
+    compile 'com.googlecode.json-simple:json-simple:1.1.1'
+    compile 'org.wasabi:wasabi:0.1-SNAPSHOT'
+}
