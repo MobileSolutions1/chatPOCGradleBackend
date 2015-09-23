@@ -55,11 +55,11 @@ public object PseudoDao {
         return Collections.unmodifiableSet(mUserMap.keySet())
     }
 
-    fun getUniqueMessageId(): String {
-        var nextRandom = sRandom.nextInt()
-        while (mMessageIds.contains(nextRandom)) {
-            nextRandom = sRandom.nextInt()
+    tailrec fun getUniqueMessageId(): String {
+        val nextRandom = sRandom.nextInt()
+        when (mMessageIds.contains(nextRandom)) {
+            false -> return nextRandom.toString()
+            true -> return getUniqueMessageId()
         }
-        return Integer.toString(nextRandom)
     }
 }

@@ -9,9 +9,7 @@ public class EchoProcessor(): PayloadProcessor {
         val dao = PseudoDao
         val client = CcsClient.Companion.create()
         val msgId = dao.getUniqueMessageId()
-        val jsonRequest =
-
-        client.createJsonMessage(
+        val jsonRequest = client.createJsonMessage(
                 msg.mFrom,
                 msgId,
                 msg.mPayload,
