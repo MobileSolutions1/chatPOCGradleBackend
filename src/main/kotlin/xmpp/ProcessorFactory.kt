@@ -1,20 +1,31 @@
 package xmpp
 
+import java.util.logging.Level
+import java.util.logging.Logger
+
 /**
  * Created by marcelo on 22/09/15.
  */
 public object ProcessorFactory {
 
-    public val PACKAGE = "xmpp"
-    public val ACTION_REGISTER = PACKAGE + ".REGISTER"
-    public val ACTION_ECHO = PACKAGE + ".ECHO"
-    public val ACTION_MESSAGE = PACKAGE + ".MESSAGE"
+    public val ACTION_REGISTER = "REGISTER"
+    public val ACTION_ECHO = "ECHO"
+    public val ACTION_MESSAGE = "MESSAGE"
+    public val ACTION_USER_LIST = "USERLIST"
+    public val ACTION_SIGNUP = "SIGNUP"
+    public val ACTION_CHAT = "CHAT"
+    public val ACTION_KEY_PRESS = "KEYPRESS"
+
+    private val logger = Logger.getLogger(this.javaClass.name)
 
     fun getProcessor(action: String?): PayloadProcessor {
+
+        logger.log(Level.INFO, "getProcessor() TRACE1")
+
         if (action == null) {
             throw IllegalStateException("action must not be null")
         }
-        if (action.equals(ACTION_REGISTER)) {
+        else if (action.equals(ACTION_REGISTER)) {
             return RegisterProcessor()
         }
         else if (action.equals(ACTION_ECHO)) {
@@ -22,6 +33,18 @@ public object ProcessorFactory {
         }
         else if (action.equals(ACTION_MESSAGE)) {
             return MessageProcessor()
+        }
+        else if (action.equals(ACTION_SIGNUP)) {
+            return UserSignup()
+        }
+        else if (action.equals(ACTION_USER_LIST)) {
+            return UserListProcessor()
+        }
+        else if (action.equals(ACTION_CHAT)) {
+            return ChatProcessor()
+        }
+        else if (action.equals(ACTION_KEY_PRESS)) {
+            return UserKeyPressProcessor()
         }
         throw IllegalStateException("Action " + action + " is unknown")
     }

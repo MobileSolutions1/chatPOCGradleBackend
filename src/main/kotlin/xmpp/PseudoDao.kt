@@ -1,6 +1,8 @@
 package xmpp
 
 import java.util.*
+import java.util.logging.Level
+import java.util.logging.Logger
 
 /**
  * Created by marcelo on 22/09/15.
@@ -13,21 +15,31 @@ public object PseudoDao {
     public val mRegisteredUsers = ArrayList<String>()
     public val mNotificationKeyMap = HashMap<String, String>()
 
+    private val logger = Logger.getLogger(this.javaClass.name)
+
     fun addRegistration(regId: String, accountName: String?) {
         synchronized(mRegisteredUsers) {
+
+            logger.log(Level.INFO, "addRegistration() TRACE1 = $regId | $accountName")
+
             if (!mRegisteredUsers.contains(regId)) {
+                logger.log(Level.INFO, "addRegistration() TRACE2")
                 mRegisteredUsers.add(regId)
             }
             if (accountName != null) {
-                var regIdList = mUserMap.get(accountName)
+                logger.log(Level.INFO, "addRegistration() TRACE3")
+                val regIdList = mUserMap.get(accountName)
                 if (regIdList == null) {
-                    regIdList = ArrayList<String>()
-                    mUserMap.put(accountName, regIdList)
+                    logger.log(Level.INFO, "addRegistration() TRACE4")
+                    val regIdList = ArrayList<String>()
+                    mUserMap.put(accountName, regIdList.plus(regId))
                 }
-                if (!regIdList.contains(regId)) {
-                    regIdList += regId
-                }
+                logger.log(Level.INFO, "addRegistration() TRACE5")
             }
+        }
+
+        for(m in mUserMap) {
+            logger.log(Level.INFO, "+++ $m")
         }
     }
 

@@ -12,7 +12,6 @@ import org.json.simple.JSONValue
 import org.json.simple.parser.ParseException
 import org.xmlpull.v1.XmlPullParser
 import java.lang
-import java.text.SimpleDateFormat
 import java.util.*
 import java.util.List
 import java.util.Map
@@ -71,23 +70,18 @@ public class CcsClient {
 
         fun create(projectId: String, apiKey: String, debuggable: Boolean): CcsClient {
             if(singleton == null) {
-                return CcsClient(projectId, apiKey, debuggable)
-            } else {
-                return singleton!!
+                singleton = CcsClient(projectId, apiKey, debuggable)
             }
+            return singleton!!
         }
 
         fun create(): CcsClient {
             return singleton!!
         }
 
-        private val CHAVE_API = "AIzaSyC3mluaIT8sbdXpJCgf-s_SUkRKTEmpCgg"
-        private val REGISTRO_ID_DEVICE = "APA91bEO6VXRVVckexwLZLOMdb_XSX19UDJ45DCkMpTm2Ilh_CnwAOXOOIjlqj0VTm9FtRSXW6d1swBB0D9XTfxKNCL0jyNyLIdLkZKmOG3QeByblJ9bDLsEQ07mXCugRGTi9web1z8J"
-
         @JvmStatic fun main(args: Array<String>) {
-            val projectId = "779755635636";
-            val password = CHAVE_API;
-            val toRegId = REGISTRO_ID_DEVICE;
+            val projectId = "779755635636"
+            val password = "AIzaSyC3mluaIT8sbdXpJCgf-s_SUkRKTEmpCgg"
 
             val ccsClient = CcsClient.Companion.create(projectId, password, true)
 
@@ -96,19 +90,9 @@ public class CcsClient {
             } catch (e: XMPPException) {
                 e.printStackTrace()
             }
-
-            // Send a sample hello downstream message to a device.
-            val messageId = ccsClient.getRandomMessageId()
-            val payload = HashMap<String, String>()
-            val newString = SimpleDateFormat("H:mm:ss").format(Date())
-            payload.put("SERVER_MESSAGE", "TESTE=" + newString)
-            val collapseKey = "sample"
-            val timeToLive = 10000L
-            val delayWhileIdle = true
-            ccsClient.send(ccsClient.createJsonMessage(toRegId, messageId, payload, collapseKey,
-                    timeToLive, delayWhileIdle))
         }
     }
+
     /**
      * Returns a random message id to uniquely identify a message.
      *
@@ -149,8 +133,8 @@ public class CcsClient {
      * Handles an upstream data message from a device application.
      */
     fun handleIncomingDataMessage(msg: CcsMessage) {
-        if (msg.mPayload.get("action") != null) {
-            val processor = ProcessorFactory.getProcessor(msg.mPayload.get("action"))
+        if (msg.mPayload.get("ACTION") != null) {
+            val processor = ProcessorFactory.getProcessor(msg.mPayload.get("ACTION"))
             processor.handleMessage(msg)
         }
     }
@@ -374,8 +358,7 @@ public class CcsClient {
             // Process Nack
             handleNackReceipt(jsonMap)
         } else {
-            logger.log(Level.WARNING, "Unrecognized message type (%s)",
-                    messageType.toString())
+            logger.log(Level.WARNING, "Unrecognized message type (%s)", messageType.toString())
         }
     }
 }

@@ -14,7 +14,7 @@ import java.lang
 public val GCM_ELEMENT_NAME = "gcm"
 public val GCM_NAMESPACE = "google:mobile:data"
 
-class GcmPacketExtension(val json: String): DefaultPacketExtension(GCM_ELEMENT_NAME, GCM_NAMESPACE) {
+public class GcmPacketExtension(val json: String): DefaultPacketExtension(GCM_ELEMENT_NAME, GCM_NAMESPACE) {
 
     override fun toXML(): String {
         return lang.String.format("<%s xmlns=\"%s\">%s</%s>", GCM_ELEMENT_NAME,
