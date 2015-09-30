@@ -37,10 +37,6 @@ public object PseudoDao {
                 logger.log(Level.INFO, "addRegistration() TRACE5")
             }
         }
-
-        for(m in mUserMap) {
-            logger.log(Level.INFO, "+++ $m")
-        }
     }
 
     fun getAllRegistrationIds(): List<String> {

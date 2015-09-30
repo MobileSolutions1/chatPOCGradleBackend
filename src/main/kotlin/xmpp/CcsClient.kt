@@ -133,8 +133,8 @@ public class CcsClient {
      * Handles an upstream data message from a device application.
      */
     fun handleIncomingDataMessage(msg: CcsMessage) {
-        if (msg.mPayload.get("ACTION") != null) {
-            val processor = ProcessorFactory.getProcessor(msg.mPayload.get("ACTION"))
+        if (msg.mPayload?.get("ACTION") != null) {
+            val processor = ProcessorFactory.getProcessor(msg.mPayload?.get("ACTION"))
             processor.handleMessage(msg)
         }
     }
