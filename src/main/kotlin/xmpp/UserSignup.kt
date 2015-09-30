@@ -1,5 +1,6 @@
 package xmpp
 
+import entities.CcsMessage
 import java.util.logging.Level
 import java.util.logging.Logger
 

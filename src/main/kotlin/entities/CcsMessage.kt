@@ -1,4 +1,4 @@
-package xmpp
+package entities
 
 import com.j256.ormlite.field.DatabaseField
 import java.util.*

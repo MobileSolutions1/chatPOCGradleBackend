@@ -1,5 +1,6 @@
 package xmpp
 
+import entities.CcsMessage
 import java.util.logging.Level
 import java.util.logging.Logger
 
@@ -34,11 +35,11 @@ public class UserKeyPressProcessor: PayloadProcessor {
         logger.log(Level.INFO, "===UserKeyPressProcessor handleMessage() TRACE9")
 
         logger.log(Level.INFO, "===UserKeyPressProcessor handleMessage() TRACE10 = " + client)
-        logger.log(Level.INFO, "===UserKeyPressProcessor handleMessage() TRACE11 = " + regIdList!!.size)
-        logger.log(Level.INFO, "===UserKeyPressProcessor handleMessage() TRACE12 = " + regIdList!!.first())
+        logger.log(Level.INFO, "===UserKeyPressProcessor handleMessage() TRACE11 = " + regIdList?.size())
+        logger.log(Level.INFO, "===UserKeyPressProcessor handleMessage() TRACE12 = " + regIdList?.first())
 
         val jsonRequest = client.createJsonMessage(
-                regIdList!!.first(),
+                regIdList?.first(),
                 msgId,
                 payload,
                 null,

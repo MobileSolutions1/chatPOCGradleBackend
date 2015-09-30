@@ -31,8 +31,8 @@ public object PseudoDao {
                 val regIdList = mUserMap.get(accountName)
                 if (regIdList == null) {
                     logger.log(Level.INFO, "addRegistration() TRACE4")
-                    val regIdList = ArrayList<String>()
-                    mUserMap.put(accountName, regIdList.plus(regId))
+                    val regIdListNew = ArrayList<String>()
+                    mUserMap.put(accountName, regIdListNew.plus(regId))
                 }
                 logger.log(Level.INFO, "addRegistration() TRACE5")
             }

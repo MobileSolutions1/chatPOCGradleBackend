@@ -1,5 +1,7 @@
 package xmpp
 
+import entities.CcsMessage
+
 /**
  * Created by marcelosenaga on 9/30/15.
  */

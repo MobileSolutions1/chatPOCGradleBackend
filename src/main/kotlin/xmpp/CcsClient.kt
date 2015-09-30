@@ -1,5 +1,6 @@
 package xmpp
 
+import entities.CcsMessage
 import org.jivesoftware.smack.*
 import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode
 import org.jivesoftware.smack.filter.PacketTypeFilter
@@ -133,8 +134,8 @@ public class CcsClient {
      * Handles an upstream data message from a device application.
      */
     fun handleIncomingDataMessage(msg: CcsMessage) {
-        if (msg.mPayload?.get("ACTION") != null) {
-            val processor = ProcessorFactory.getProcessor(msg.mPayload?.get("ACTION"))
+        if (msg.mPayload.get("ACTION") != null) {
+            val processor = ProcessorFactory.getProcessor(msg.mPayload.get("ACTION"))
             processor.handleMessage(msg)
         }
     }
@@ -207,10 +208,10 @@ public class CcsClient {
     }
 
     fun createAttributeMap(to: String?, messageId: String?, payload: HashMap<String, String>,
-            collapseKey: String?, timeToLive: Long?, delayWhileIdle: Boolean): HashMap<String, Object> {
+            collapseKey: String?, timeToLive: Long?, delayWhileIdle: Boolean?): HashMap<String, Object> {
         val message = HashMap<String, Object>()
         if (to != null) {
-            message.put("to", to!! as java.lang.Object)
+            message.put("to", to as java.lang.Object)
         }
         if (collapseKey != null) {
             message.put("collapse_key", collapseKey as java.lang.Object)
@@ -222,7 +223,7 @@ public class CcsClient {
             message.put("delay_while_idle", true as java.lang.Object)
         }
         if (messageId != null) {
-            message.put("message_id", messageId!! as java.lang.Object)
+            message.put("message_id", messageId as java.lang.Object)
         }
         message.put("data", payload as java.lang.Object)
         return message
