@@ -52,6 +52,7 @@ public class CcsClient {
     val debuggable: Boolean
     val logger = Logger.getLogger(this.javaClass.name)
     val random = Random()
+
     var connection: XMPPConnection? = null
     var config: ConnectionConfiguration? = null
 
@@ -59,7 +60,7 @@ public class CcsClient {
 
         private var singleton: CcsClient? = null
 
-        fun create(projectId: String, apiKey: String, debuggable: Boolean): CcsClient {
+        @Synchronized fun create(projectId: String, apiKey: String, debuggable: Boolean): CcsClient {
             if(singleton == null) {
                 singleton = CcsClient(projectId, apiKey, debuggable)
             }
@@ -109,8 +110,8 @@ public class CcsClient {
         val map = createAttributeMap(null, null, payload, collapseKey, timeToLive, delayWhileIdle)
         recipients.forEach { toRegId ->
             val messageId = getRandomMessageId()
-            map.put("message_id", messageId as Any)
-            map.put("to", toRegId as Any)
+            map.put("message_id", messageId)
+            map.put("to", toRegId)
             val jsonRequest = createJsonMessage(map)
             send(jsonRequest)
         }
@@ -138,7 +139,7 @@ public class CcsClient {
         // unique id of this message
         val messageId = jsonObject.get("message_id").toString()
 
-        val payload = jsonObject.get("data") as HashMap<String, String>
+        val payload = jsonObject.get("data") as MutableMap<String, String>
 
         val msg = CcsMessage(from, category, messageId, payload)
 
@@ -196,21 +197,21 @@ public class CcsClient {
             collapseKey: String?, timeToLive: Long?, delayWhileIdle: Boolean?): MutableMap<String, Any> {
         val message = hashMapOf<String, Any>()
         if (to != null) {
-            message.put("to", to as Any)
+            message.put("to", to)
         }
         if (collapseKey != null) {
-            message.put("collapse_key", collapseKey as Any)
+            message.put("collapse_key", collapseKey)
         }
         if (timeToLive != null) {
-            message.put("time_to_live", timeToLive as Any)
+            message.put("time_to_live", timeToLive)
         }
         if (delayWhileIdle != null && delayWhileIdle) {
-            message.put("delay_while_idle", true as Any)
+            message.put("delay_while_idle", true)
         }
         if (messageId != null) {
-            message.put("message_id", messageId as Any)
+            message.put("message_id", messageId)
         }
-        message.put("data", payload as Any)
+        message.put("data", payload)
         return message
     }
 
@@ -298,7 +299,7 @@ public class CcsClient {
                 val gcmPacket = incomingMessage.getExtension(Config.GCM_NAMESPACE) as GcmPacketExtension
                 val json = gcmPacket.json
                 try {
-                    val jsonMap = JSONValue.parseWithException(json) as Map<String, Any>
+                    val jsonMap = JSONValue.parseWithException(json) as MutableMap<String, Any>
                     handleMessage(jsonMap)
                 } catch (e: ParseException) {
                     logger.log(Level.SEVERE, "Error parsing JSON " + json, e)
