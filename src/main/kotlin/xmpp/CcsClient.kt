@@ -14,8 +14,6 @@ import org.json.simple.parser.ParseException
 import org.xmlpull.v1.XmlPullParser
 import java.lang
 import java.util.*
-import java.util.List
-import java.util.Map
 import java.util.logging.Level
 import java.util.logging.Logger
 import javax.net.ssl.SSLSocketFactory
@@ -41,8 +39,7 @@ public class CcsClient {
         this.debuggable = debuggable
 
         // Add GcmPacketExtension
-        ProviderManager.getInstance().addExtensionProvider(GCM_ELEMENT_NAME,
-                GCM_NAMESPACE, object: PacketExtensionProvider {
+        ProviderManager.getInstance().addExtensionProvider(Config.GCM_ELEMENT_NAME, Config.GCM_NAMESPACE, object: PacketExtensionProvider {
             override fun parseExtension(parser: XmlPullParser): PacketExtension {
                 val json = parser.nextText()
                 return GcmPacketExtension(json)
@@ -53,14 +50,7 @@ public class CcsClient {
     val projectId: String
     val apiKey: String
     val debuggable: Boolean
-
     val logger = Logger.getLogger(this.javaClass.name)
-
-    val GCM_SERVER = "gcm.googleapis.com"
-    val GCM_PORT = 5235
-    val GCM_ELEMENT_NAME = "gcm"
-    val GCM_NAMESPACE = "google:mobile:data"
-
     val random = Random()
     var connection: XMPPConnection? = null
     var config: ConnectionConfiguration? = null
@@ -81,11 +71,7 @@ public class CcsClient {
         }
 
         @JvmStatic fun main(args: Array<String>) {
-            val projectId = "779755635636"
-            val password = "AIzaSyC3mluaIT8sbdXpJCgf-s_SUkRKTEmpCgg"
-
-            val ccsClient = CcsClient.Companion.create(projectId, password, true)
-
+            val ccsClient = CcsClient.Companion.create(Config.PROJECT_ID, Config.SERVER_PASS, true)
             try {
                 ccsClient.connect()
             } catch (e: XMPPException) {
@@ -123,8 +109,8 @@ public class CcsClient {
         val map = createAttributeMap(null, null, payload, collapseKey, timeToLive, delayWhileIdle)
         recipients.forEach { toRegId ->
             val messageId = getRandomMessageId()
-            map.put("message_id", messageId as Object)
-            map.put("to", toRegId as Object)
+            map.put("message_id", messageId as Any)
+            map.put("to", toRegId as Any)
             val jsonRequest = createJsonMessage(map)
             send(jsonRequest)
         }
@@ -143,7 +129,7 @@ public class CcsClient {
     /**
      *
      */
-    fun getMessage(jsonObject: Map<String, Object>): CcsMessage {
+    fun getMessage(jsonObject: Map<String, Any>): CcsMessage {
         val from = jsonObject.get("from").toString()
 
         // PackageName of the application that sent this message.
@@ -166,7 +152,7 @@ public class CcsClient {
      * By default, it only logs a INFO message, but subclasses could override it
      * to properly handle ACKS.
      */
-    fun handleAckReceipt(jsonObject: Map<String, Object>) {
+    fun handleAckReceipt(jsonObject: Map<String, Any>) {
         val messageId = jsonObject.get("message_id").toString()
         val from = jsonObject.get("from").toString()
         logger.log(Level.INFO, "handleAckReceipt() from: " + from + ", messageId: " + messageId)
@@ -179,7 +165,7 @@ public class CcsClient {
      * By default, it only logs a INFO message, but subclasses could override it
      * to properly handle NACKS.
      */
-    fun handleNackReceipt(jsonObject: Map<String, Object>) {
+    fun handleNackReceipt(jsonObject: Map<String, Any>) {
         val messageId = jsonObject.get("message_id").toString()
         val from = jsonObject.get("from").toString()
         logger.log(Level.INFO, "handleNackReceipt() from: " + from + ", messageId: " + messageId)
@@ -197,35 +183,34 @@ public class CcsClient {
      * @param delayWhileIdle GCM delay_while_idle parameter (Optional).
      * @return JSON encoded GCM message.
      */
-    fun createJsonMessage(to: String?, messageId: String?, payload: HashMap<String, String>,
+    fun createJsonMessage(to: String?, messageId: String?, payload: MutableMap<String, String>,
             collapseKey: String?, timeToLive: Long?, delayWhileIdle: Boolean): String {
-        return createJsonMessage(createAttributeMap(to, messageId, payload,
-                collapseKey, timeToLive, delayWhileIdle))
+        return createJsonMessage(createAttributeMap(to, messageId, payload, collapseKey, timeToLive, delayWhileIdle))
     }
 
-    fun createJsonMessage(map: HashMap<String, Object>): String {
+    fun createJsonMessage(map: MutableMap<String, Any>): String {
         return JSONValue.toJSONString(map)
     }
 
-    fun createAttributeMap(to: String?, messageId: String?, payload: HashMap<String, String>,
-            collapseKey: String?, timeToLive: Long?, delayWhileIdle: Boolean?): HashMap<String, Object> {
-        val message = HashMap<String, Object>()
+    fun createAttributeMap(to: String?, messageId: String?, payload: MutableMap<String, String>,
+            collapseKey: String?, timeToLive: Long?, delayWhileIdle: Boolean?): MutableMap<String, Any> {
+        val message = hashMapOf<String, Any>()
         if (to != null) {
-            message.put("to", to as java.lang.Object)
+            message.put("to", to as Any)
         }
         if (collapseKey != null) {
-            message.put("collapse_key", collapseKey as java.lang.Object)
+            message.put("collapse_key", collapseKey as Any)
         }
         if (timeToLive != null) {
-            message.put("time_to_live", timeToLive as java.lang.Object)
+            message.put("time_to_live", timeToLive as Any)
         }
         if (delayWhileIdle != null && delayWhileIdle) {
-            message.put("delay_while_idle", true as java.lang.Object)
+            message.put("delay_while_idle", true as Any)
         }
         if (messageId != null) {
-            message.put("message_id", messageId as java.lang.Object)
+            message.put("message_id", messageId as Any)
         }
-        message.put("data", payload as java.lang.Object)
+        message.put("data", payload as Any)
         return message
     }
 
@@ -267,8 +252,8 @@ public class CcsClient {
      * Connects to GCM Cloud Connection Server using the supplied credentials.
      * @throws XMPPException
      */
-    fun connect() {
-        config = ConnectionConfiguration(GCM_SERVER, GCM_PORT)
+    private fun connect() {
+        config = ConnectionConfiguration(Config.GCM_SERVER, Config.GCM_PORT)
         config?.setSecurityMode(SecurityMode.enabled)
         config?.setReconnectionAllowed(true)
         config?.setRosterLoadedAtLogin(false)
@@ -310,10 +295,10 @@ public class CcsClient {
             override fun processPacket(packet: Packet) {
                 logger.log(Level.INFO, "Received: " + packet.toXML())
                 val incomingMessage = packet as Message
-                val gcmPacket = incomingMessage.getExtension(GCM_NAMESPACE) as GcmPacketExtension
+                val gcmPacket = incomingMessage.getExtension(Config.GCM_NAMESPACE) as GcmPacketExtension
                 val json = gcmPacket.json
                 try {
-                    val jsonMap = JSONValue.parseWithException(json) as Map<String, Object>
+                    val jsonMap = JSONValue.parseWithException(json) as Map<String, Any>
                     handleMessage(jsonMap)
                 } catch (e: ParseException) {
                     logger.log(Level.SEVERE, "Error parsing JSON " + json, e)
@@ -334,7 +319,7 @@ public class CcsClient {
         logger.log(Level.INFO, "logged in: " + projectId)
     }
 
-    fun handleMessage(jsonMap: Map<String, Object>) {
+    fun handleMessage(jsonMap: Map<String, Any>) {
         // present for "ack"/"nack", null otherwise
         val messageType = jsonMap.get("message_type")
 

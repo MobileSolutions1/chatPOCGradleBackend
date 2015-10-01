@@ -1,8 +1,5 @@
 package xmpp
 
-import java.util.logging.Level
-import java.util.logging.Logger
-
 /**
  * Created by marcelo on 22/09/15.
  */
@@ -16,11 +13,7 @@ public object ProcessorFactory {
     public val ACTION_CHAT = "CHAT"
     public val ACTION_KEY_PRESS = "KEYPRESS"
 
-    private val logger = Logger.getLogger(this.javaClass.name)
-
     fun getProcessor(action: String?): PayloadProcessor {
-
-        logger.log(Level.INFO, "getProcessor() TRACE1")
 
         if (action == null) {
             throw IllegalStateException("action must not be null")

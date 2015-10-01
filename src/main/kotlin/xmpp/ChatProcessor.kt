@@ -7,7 +7,7 @@ import entities.CcsMessage
  */
 public class ChatProcessor: PayloadProcessor {
 
-    private val MESSAGE_KEY = "SM";
+    private val MESSAGE_KEY = "SM"
 
     override fun handleMessage(msg: CcsMessage) {
         val dao = PseudoDao

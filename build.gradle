@@ -22,8 +22,8 @@ jar {
     }
 }
 
-//mainClassName = "xmpp.CcsClient"
-mainClassName = "entities.SimpleMain"
+mainClassName = "xmpp.CcsClient"
+//mainClassName = "entities.SimpleMain"
 
 
 repositories {

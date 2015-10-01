@@ -11,9 +11,9 @@ public object PseudoDao {
 
     public val sRandom = Random()
     public val mMessageIds = HashSet<Int>()
-    public val mUserMap = HashMap<String, List<String>>()
+    public val mUserMap = hashMapOf<String, List<String>>()
     public val mRegisteredUsers = ArrayList<String>()
-    public val mNotificationKeyMap = HashMap<String, String>()
+    public val mNotificationKeyMap = hashMapOf<String, String>()
 
     private val logger = Logger.getLogger(this.javaClass.name)
 

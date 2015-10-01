@@ -11,14 +11,16 @@ import java.lang
  *
  * XMPP Packet Extension for GCM Cloud Connection Server.
  */
-public val GCM_ELEMENT_NAME = "gcm"
-public val GCM_NAMESPACE = "google:mobile:data"
+public class GcmPacketExtension: DefaultPacketExtension {
 
-public class GcmPacketExtension(val json: String): DefaultPacketExtension(GCM_ELEMENT_NAME, GCM_NAMESPACE) {
+    val json: String
+
+    constructor(json: String): super(Config.GCM_ELEMENT_NAME, Config.GCM_NAMESPACE) {
+        this.json = json
+    }
 
     override fun toXML(): String {
-        return lang.String.format("<%s xmlns=\"%s\">%s</%s>", GCM_ELEMENT_NAME,
-                GCM_NAMESPACE, json, GCM_ELEMENT_NAME)
+        return lang.String.format("<%s xmlns=\"%s\">%s</%s>", Config.GCM_ELEMENT_NAME, Config.GCM_NAMESPACE, json, Config.GCM_ELEMENT_NAME)
     }
 
     fun toPacket(): Packet {

@@ -1,16 +1,15 @@
 package entities
 
 import com.j256.ormlite.field.DatabaseField
-import java.util.*
 import com.j256.ormlite.table.DatabaseTable
 
 /**
  * Created by marcelo on 22/09/15.
  */
 @DatabaseTable(tableName = "cssmessage")
-public class CcsMessage(from: String, category: String, messageId: String, payload: HashMap<String, String>) {
+public class CcsMessage(from: String, category: String, messageId: String, payload: MutableMap<String, String>) {
 
-    constructor(): this("", "", "", HashMap<String, String>())
+    constructor(): this("", "", "", hashMapOf<String, String>())
 
     @DatabaseField(generatedId = true)
     var id: Int = 0
@@ -24,7 +23,7 @@ public class CcsMessage(from: String, category: String, messageId: String, paylo
     @DatabaseField(columnName = "messageId", canBeNull = true)
     var mMessageId: String = messageId
 
-    var mPayload: HashMap<String, String> = payload
+    var mPayload: MutableMap<String, String> = payload
 
     override fun hashCode(): Int {
         return mFrom.hashCode()
@@ -32,8 +31,8 @@ public class CcsMessage(from: String, category: String, messageId: String, paylo
 
     override fun equals(other: Any?): Boolean {
         if (other == null || other.javaClass != this.javaClass) {
-            return false;
+            return false
         }
-        return mFrom.equals((other as CcsMessage).mFrom);
+        return mFrom.equals((other as CcsMessage).mFrom)
     }
 }
