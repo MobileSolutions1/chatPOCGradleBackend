@@ -12,7 +12,6 @@ import org.jivesoftware.smack.provider.ProviderManager
 import org.json.simple.JSONValue
 import org.json.simple.parser.ParseException
 import org.xmlpull.v1.XmlPullParser
-import java.lang
 import java.util.*
 import java.util.logging.Level
 import java.util.logging.Logger
@@ -90,7 +89,7 @@ public class CcsClient {
      *
      */
     fun getRandomMessageId(): String {
-        return "m-" + lang.Long.toString(random.nextLong())
+        return "m-" + java.lang.Long.toString(random.nextLong())
     }
 
     /**
@@ -139,7 +138,12 @@ public class CcsClient {
         // unique id of this message
         val messageId = jsonObject.get("message_id").toString()
 
-        val payload = jsonObject.get("data") as MutableMap<String, String>
+        val map = jsonObject.get("data")
+
+        val payload: MutableMap<String, String> = when(map) {
+            is MutableMap<*,*> -> map as MutableMap<String, String>
+            else -> hashMapOf()
+        }
 
         val msg = CcsMessage(from, category, messageId, payload)
 
@@ -156,7 +160,7 @@ public class CcsClient {
     fun handleAckReceipt(jsonObject: Map<String, Any>) {
         val messageId = jsonObject.get("message_id").toString()
         val from = jsonObject.get("from").toString()
-        logger.log(Level.INFO, "handleAckReceipt() from: " + from + ", messageId: " + messageId)
+        logger.log(Level.INFO, "handleAckReceipt() from: $from , messageId: $messageId")
     }
 
     /**
@@ -169,7 +173,7 @@ public class CcsClient {
     fun handleNackReceipt(jsonObject: Map<String, Any>) {
         val messageId = jsonObject.get("message_id").toString()
         val from = jsonObject.get("from").toString()
-        logger.log(Level.INFO, "handleNackReceipt() from: " + from + ", messageId: " + messageId)
+        logger.log(Level.INFO, "handleNackReceipt() from: $from, messageId: $messageId")
     }
 
     /**

@@ -4,7 +4,6 @@ import org.jivesoftware.smack.packet.DefaultPacketExtension
 import org.jivesoftware.smack.packet.Message
 import org.jivesoftware.smack.packet.Packet
 import org.jivesoftware.smack.util.StringUtils
-import java.lang
 
 /**
  * Created by marcelo on 23/09/15.
@@ -20,7 +19,7 @@ public class GcmPacketExtension: DefaultPacketExtension {
     }
 
     override fun toXML(): String {
-        return lang.String.format("<%s xmlns=\"%s\">%s</%s>", Config.GCM_ELEMENT_NAME, Config.GCM_NAMESPACE, json, Config.GCM_ELEMENT_NAME)
+        return java.lang.String.format("<%s xmlns=\"%s\">%s</%s>", Config.GCM_ELEMENT_NAME, Config.GCM_NAMESPACE, json, Config.GCM_ELEMENT_NAME)
     }
 
     fun toPacket(): Packet {
