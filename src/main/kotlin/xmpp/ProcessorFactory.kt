@@ -12,6 +12,7 @@ public object ProcessorFactory {
     public val ACTION_SIGNUP = "SIGNUP"
     public val ACTION_CHAT = "CHAT"
     public val ACTION_KEY_PRESS = "KEYPRESS"
+    public val ACTION_UPLOAD = "UPLOAD"
 
     fun getProcessor(action: String?): PayloadProcessor {
 
@@ -35,6 +36,9 @@ public object ProcessorFactory {
         }
         else if (action.equals(ACTION_CHAT)) {
             return ChatProcessor()
+        }
+        else if (action.equals(ACTION_UPLOAD)) {
+            return UploadProcessor()
         }
         else if (action.equals(ACTION_KEY_PRESS)) {
             return UserKeyPressProcessor()
