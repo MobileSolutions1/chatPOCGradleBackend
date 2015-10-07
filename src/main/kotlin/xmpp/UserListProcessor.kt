@@ -19,10 +19,10 @@ public class UserListProcessor: PayloadProcessor {
         payload.put(msgId, msgId)
         payload.put(MESSAGE_KEY, "USERLIST")
 
-        val accounts = dao.getAccounts()
+        val userlist = dao.getAccounts()
         var users = ""
-        for(account in accounts) {
-            users = users + account + ":"
+        for(user in userlist) {
+            users = users + user.account + "/" + user.status + ":"
         }
 
         payload.put("USERLIST", users)

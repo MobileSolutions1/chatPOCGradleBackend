@@ -1,5 +1,6 @@
 package xmpp
 
+import entities.User
 import java.util.*
 import java.util.logging.Level
 import java.util.logging.Logger
@@ -11,7 +12,7 @@ public object PseudoDao {
 
     public val sRandom = Random()
     public val mMessageIds = HashSet<Int>()
-    public val mUserMap = hashMapOf<String, List<String>>()
+    public val mUserMap = hashMapOf<String, User>()
     public val mRegisteredUsers = ArrayList<String>()
     public val mNotificationKeyMap = hashMapOf<String, String>()
 
@@ -19,23 +20,17 @@ public object PseudoDao {
 
     fun addRegistration(regId: String, accountName: String?) {
         synchronized(mRegisteredUsers) {
-
-            logger.log(Level.INFO, "addRegistration() TRACE1 = $regId | $accountName")
-
             if (!mRegisteredUsers.contains(regId)) {
-                logger.log(Level.INFO, "addRegistration() TRACE2")
                 mRegisteredUsers.add(regId)
             }
             if (accountName != null) {
-                logger.log(Level.INFO, "addRegistration() TRACE3")
-                val regIdList = mUserMap.get(accountName)
-                if (regIdList == null) {
-                    logger.log(Level.INFO, "addRegistration() TRACE4")
-                    val regIdListNew = ArrayList<String>()
-                    mUserMap.put(accountName, regIdListNew.plus(regId))
+                val user = mUserMap.get(accountName)
+                if (user == null) {
+                    mUserMap.put(accountName, User(regId, accountName, "online"))
                 }
-                logger.log(Level.INFO, "addRegistration() TRACE5")
             }
+            val user = mUserMap.get(accountName)
+            user?.status = "online"
         }
     }
 
@@ -43,12 +38,14 @@ public object PseudoDao {
         return Collections.unmodifiableList(mRegisteredUsers)
     }
 
-    fun getAllRegistrationIdsForAccount(account: String): List<String>? {
-        val regIds = mUserMap.get(account)
-        if (regIds != null) {
-            return Collections.unmodifiableList(regIds)
-        }
-        return null
+    fun getAllRegistrationIdsForAccount(account: String): String? {
+        val user = mUserMap.get(account)
+        return user?.regId
+    }
+
+    fun setStatus(account: String, status: String) {
+        val user = mUserMap.get(account)
+        user?.status = status
     }
 
     fun getNotificationKeyName(accountName: String): String? {
@@ -59,8 +56,8 @@ public object PseudoDao {
         mNotificationKeyMap.put(accountName, notificationKeyName)
     }
 
-    fun getAccounts(): Set<String> {
-        return Collections.unmodifiableSet(mUserMap.keySet())
+    fun getAccounts(): Collection<User> {
+        return mUserMap.values()
     }
 
     tailrec fun getUniqueMessageId(): String {

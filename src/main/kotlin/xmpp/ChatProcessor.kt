@@ -17,9 +17,9 @@ public class ChatProcessor: PayloadProcessor {
         payload.put(msgId, msgId)
         payload.put(MESSAGE_KEY, "CHAT")
         val toUser = payload.get("TOUSER")
-        val regIdList = dao.getAllRegistrationIdsForAccount(toUser!!)
+        val user = dao.getAllRegistrationIdsForAccount(toUser!!)
         val jsonRequest = client.createJsonMessage(
-                regIdList!!.first(),
+                user,
                 msgId,
                 payload,
                 null,

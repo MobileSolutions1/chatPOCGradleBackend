@@ -19,10 +19,10 @@ public class UserKeyPressProcessor: PayloadProcessor {
 
         payload.put(MESSAGE_KEY, "CHAT_KEYPRESS")
         val toUser = payload.get("TOUSER")
-        val regIdList = dao.getAllRegistrationIdsForAccount(toUser!!)
+        val user = dao.getAllRegistrationIdsForAccount(toUser!!)
 
         val jsonRequest = client.createJsonMessage(
-                regIdList?.first(),
+                user,
                 msgId,
                 payload,
                 null,
